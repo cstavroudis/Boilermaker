@@ -1,32 +1,83 @@
 const express = require("express");
 const path = require("path");
-const volleyball = require("volleyball");
-
+const morgan = require("morgan");
+const { db } = require("./db");
+const { User } = require("./db/models");
+const session = require("express-session");
+const passport = require("passport");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// logging middleware
-// Only use logging middleware when not running tests
-const debug = process.env.NODE_ENV === "test";
-app.use(volleyball.custom({ debug }));
+if (process.env.NODE_ENV === "development") {
+  require("../secrets"); // this will mutate the process.env object with your secrets.
+}
 
-// body parsing middleware
+// passport registration
+passport.serializeUser((user, done) => {
+  try {
+    // store user.id on the session
+    done(null, user.id);
+  } catch (error) {
+    done(error);
+  }
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error);
+  }
+});
+
+// Logging middleware
+app.use(morgan("dev"));
+
+// Create database store
+const dbStore = new SequelizeStore({ db: db });
+
+dbStore.sync();
+
+// Session middleware
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "This is not a very secure secret...",
+    store: dbStore,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Initialize passport -  to consume req.session obj & attach the user to the request obj
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// static middleware
+// Static middleware
 app.use(express.static(path.join(__dirname, "../public")));
 
-//routes
-app.use("/api", require("./apiRoutes"));
+//Routes
+app.use("/api", require("./api"));
+app.use("/auth", require("./auth"));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 }); // Send index.html for any other requests
 
-// error handling middleware
+// Error handling middleware
 app.use((err, req, res, next) => {
   if (process.env.NODE_ENV !== "test") console.error(err.stack);
   res.status(err.status || 500).send(err.message || "Internal server error");
+});
+
+db.sync().then(() => {
+  console.log("db synced");
+  app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 });
 
 module.exports = app;

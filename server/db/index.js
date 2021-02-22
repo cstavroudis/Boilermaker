@@ -1,12 +1,12 @@
 const db = require("./database");
-const { Model, Other } = require("./models");
+const { User, Other } = require("./models");
 
 // associations
-Model.hasMany(Other);
-Other.belongsTo(Model);
+User.hasMany(Other);
+Other.belongsTo(User);
 
 module.exports = {
   db,
-  Model,
+  User,
   Other,
 };
