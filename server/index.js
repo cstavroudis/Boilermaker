@@ -16,6 +16,9 @@ app.use(express.urlencoded({ extended: true }));
 // static middleware
 app.use(express.static(path.join(__dirname, "../public")));
 
+//routes
+app.use("/api", require("./apiRoutes"));
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 }); // Send index.html for any other requests
