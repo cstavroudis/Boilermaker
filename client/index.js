@@ -7,7 +7,7 @@ import store from "./redux/store";
 import App from "./app";
 
 // establishes socket connection
-// import "./socket";
+import "../server/socket";
 
 ReactDOM.render(
   <Provider store={store}>

@@ -81,6 +81,7 @@ User.beforeBulkCreate((users) => {
 });
 
 module.exports = {
+  db,
   User,
   Other,
 };

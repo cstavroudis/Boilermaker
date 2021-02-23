@@ -19,7 +19,7 @@ router.get("/", async (req, res, next) => {
 
 // POST /api/users/
 router.post("/", function (req, res, next) {
-  /* etc */
+  res.status(404).send("no POST route has been created");
 });
 
 // PUT /api/users/:userId

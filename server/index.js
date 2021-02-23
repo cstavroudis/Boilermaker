@@ -7,6 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const app = express();
+const socketio = require("socket.io");
 const PORT = 3000; //process.env.PORT || 3000;
 
 if (process.env.NODE_ENV === "development") {
@@ -77,7 +78,12 @@ app.use((err, req, res, next) => {
 
 db.sync().then(() => {
   console.log("db synced");
-  app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+  const server = app.listen(PORT, () =>
+    console.log(`listening on port ${PORT}`)
+  );
+  // set up our socket control center
+  const io = socketio(server);
+  require("./socket")(io);
 });
 
 module.exports = app;
