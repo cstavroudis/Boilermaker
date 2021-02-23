@@ -1,5 +1,5 @@
 const db = require("./database");
-const { User, Other } = require("./models");
+const { User, Other } = require("./models/user");
 
 // associations
 User.hasMany(Other);

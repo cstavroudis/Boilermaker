@@ -2,12 +2,12 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const { db } = require("./db");
-const { User } = require("./db/models");
+const { User } = require("./db/models/user");
 const session = require("express-session");
 const passport = require("passport");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000; //process.env.PORT || 3000;
 
 if (process.env.NODE_ENV === "development") {
   require("../secrets"); // this will mutate the process.env object with your secrets.
@@ -25,7 +25,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await User.findById(id);
+    const user = await User.findByPk(id);
     done(null, user);
   } catch (error) {
     done(error);

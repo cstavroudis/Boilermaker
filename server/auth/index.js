@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const User = require("../db/models/user");
+const { User } = require("../db/models/user");
 
-// POST auth/login
+// POST /auth/login
 router.post("/login", async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email: req.body.email } });
@@ -22,15 +22,13 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-// POST auth/signup
+// POST /auth/signup
 router.post("/signup", async (req, res, next) => {
   try {
     const user = await User.create(req.body);
-    req.login((user, err) => {
-      if (err) next(err);
-      else res.json(user);
-    });
+    req.login(user, (err) => (err ? next(err) : res.json(user)));
   } catch (err) {
+    console.log("there was an error with POST /auth/signup");
     if (err.name === "SequelizeUniqueConstraintError") {
       res.status(401).send("User already exists");
     } else {
@@ -39,14 +37,14 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-// POST auth/logout
+// POST /auth/logout
 router.post("/logout", (req, res) => {
   req.logout();
   req.session.destroy();
   res.redirect("/");
 });
 
-// GET auth/me
+// GET /auth/me
 router.get("/me", (req, res) => {
   res.json(req.user);
 });
