@@ -1,6 +1,7 @@
 const { expect } = require("chai");
 const request = require("supertest");
-const { db, User } = require("../db");
+const db = require("../db");
+const { User } = require("../db/models");
 const app = require("../index");
 
 describe("User routes", () => {
@@ -23,7 +24,7 @@ describe("User routes", () => {
     it("POST /api/users", async () => {
       const res = await request(app).post("/api/users").expect(404);
 
-      expect(res.body).to.be.equal("no POST route has been created");
+      expect(Object.keys(res.body).length).to.be.equal(0);
     });
   });
 });

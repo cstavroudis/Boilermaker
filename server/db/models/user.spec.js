@@ -1,5 +1,6 @@
 const { expect } = require("chai");
-const { User, db } = require("../index");
+const db = require("../index");
+const { User } = require("../models");
 
 describe("User model", () => {
   beforeEach(() => db.sync({ force: true }));

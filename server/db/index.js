@@ -1,12 +1,16 @@
 const db = require("./database");
-const { User, Other } = require("./models/user");
+// const { User } = require("./models/user");
 
 // associations
-User.hasMany(Other);
-Other.belongsTo(User);
+// User.hasMany(Other);
+// Other.belongsTo(User);
 
-module.exports = {
-  db,
-  User,
-  Other,
-};
+// register models
+require("./models");
+
+module.exports = db;
+// {
+//   db,
+//   User,
+//   // Other,
+// };

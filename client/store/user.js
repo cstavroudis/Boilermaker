@@ -53,7 +53,7 @@ export const logout = () => {
     try {
       await axios.post("/auth/logout");
       dispatch(removeUser());
-      history.push("/home");
+      history.push("/login");
     } catch (error) {
       console.log("There was an error in the logout thunk creator.", error);
     }

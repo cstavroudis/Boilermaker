@@ -34,13 +34,13 @@ const User = db.define("user", {
   },
 });
 
-const Other = db.define("other", {
-  email: {
-    type: Sequelize.STRING,
-    unique: true,
-    allowNull: false,
-  },
-});
+// const Other = db.define("other", {
+//   email: {
+//     type: Sequelize.STRING,
+//     unique: true,
+//     allowNull: false,
+//   },
+// });
 
 /**
  * instanceMethods
@@ -83,5 +83,5 @@ User.beforeBulkCreate((users) => {
 module.exports = {
   db,
   User,
-  Other,
+  // Other,
 };
